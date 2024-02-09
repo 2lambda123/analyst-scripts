@@ -5,6 +5,7 @@ from androguard.core.bytecodes import apk
 from androguard.core import androconf
 from androguard.core.bytecodes.axml import ARSCParser
 from lxml import etree
+import lxml.etree
 
 
 if __name__ == '__main__':
@@ -30,7 +31,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     xmltree = arscobj.get_public_resources(arscobj.get_packages_names()[0])
-    x = etree.fromstring(xmltree)
+    x = etree.fromstring(xmltree, parser=lxml.etree.XMLParser(resolve_entities=False))
     for elt in x:
         if elt.get('type') == 'string':
             val = arscobj.get_resolved_res_configs(int(elt.get('id')[2:], 16))[0][1]
