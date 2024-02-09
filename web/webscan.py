@@ -4,6 +4,7 @@ import yara
 from io import StringIO
 from urllib.parse import urljoin, urlparse
 from lxml import etree
+import lxml.etree
 
 
 def extract_suburls(webpage, url):
@@ -14,7 +15,7 @@ def extract_suburls(webpage, url):
         return set()
     urlp = urlparse(url)
     parser = etree.HTMLParser()
-    tree   = etree.parse(StringIO(webpage), parser)
+    tree   = etree.parse(StringIO(webpage), parser, parser=lxml.etree.XMLParser(resolve_entities=False))
     res = set()
     for s in tree.xpath('//script[@src]/@src'):
         if s.startswith('http'):

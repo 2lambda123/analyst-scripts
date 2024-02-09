@@ -5,6 +5,7 @@ import collections
 from zipfile import ZipFile
 from lxml import etree
 from oletools.olevba import VBA_Parser, TYPE_OLE, TYPE_OpenXML, TYPE_Word2003_XML, TYPE_MHTML, FileOpenError
+import lxml.etree
 
 """
 Script analyzing docx files
@@ -21,7 +22,7 @@ def extract_targets(input_zip):
     for n in input_zip.namelist():
         if n.endswith('.rels'):
             data = input_zip.read(n)
-            root = etree.fromstring(data)
+            root = etree.fromstring(data, parser=lxml.etree.XMLParser(resolve_entities=False))
             if root.tag == "{http://schemas.openxmlformats.org/package/2006/relationships}Relationships":
                 for c in root.getchildren():
                     if c.tag == "{http://schemas.openxmlformats.org/package/2006/relationships}Relationship":
@@ -39,7 +40,7 @@ def extract_metadata(input_zip):
     res = []
     if 'docProps/core.xml' in input_zip.namelist():
         data = input_zip.read('docProps/core.xml')
-        root = etree.fromstring(data)
+        root = etree.fromstring(data, parser=lxml.etree.XMLParser(resolve_entities=False))
         if not root.tag.endswith('coreProperties'):
             print("Impossible to extract metadata")
         else:
