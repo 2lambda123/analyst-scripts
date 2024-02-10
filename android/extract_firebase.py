@@ -10,6 +10,22 @@ import lxml.etree
 
 
 def get_firebase(fpath):
+    """Returns the Firebase URL from the given APK file.
+    Parameters:
+        - fpath (str): The file path of the APK file.
+    Returns:
+        - str: The Firebase URL found in the APK file, if any.
+    Processing Logic:
+        - Parses the APK file using the apk.APK() function.
+        - Retrieves the Android resources using the get_android_resources() function.
+        - Checks if the retrieved resources are not empty.
+        - Extracts the public resources from the first package using the get_public_resources() function.
+        - Converts the extracted resources into an XML tree using the fromstring() function.
+        - Iterates through the XML tree and checks for elements with type 'string'.
+        - Retrieves the resolved resource configurations using the get_resolved_res_configs() function.
+        - Checks if the retrieved value ends with 'firebaseio.com'.
+        - Returns the Firebase URL if found, otherwise returns None."""
+    
     a = apk.APK(fpath)
     arscobj = a.get_android_resources()
     if not arscobj:
